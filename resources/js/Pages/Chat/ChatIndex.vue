@@ -1,20 +1,22 @@
 <script setup>
 import ChatLayout from '@/Layouts/ChatLayout.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Link } from '@inertiajs/vue3';
+//import ChatContent from '@/Components/ChatContent.vue'
 
+import ChatContent from '@/Components/ChatContent.vue'
 const form = useForm({
-    prompt: "Please enter"
-})
+    prompt: ""
+});
 
 
 const submit = () => {
-    form.post("/chat")
-}
+    form.post("/chat");
+};
 
 const props = defineProps({
     messages: Array,
     chat: null | Object,
-})
+});
 
 
 
@@ -22,10 +24,30 @@ const props = defineProps({
 <template>
     <ChatLayout>
         <template #aside>
+            <ul class="p-2">
+                <template v-for="message in messages" :key="message.id">
+                    <li
+                        class="px-4 py-2 my-2 flex justify-between font-semibold text-slate-400 bg-slate-900 hover:bg-slate-700 rounded-lg duration-200">
 
+                        <Link :href="`/chat/${message.id}`">{{ message.context[0].content }}
+                        </Link>
+
+                    </li>
+                </template>
+            </ul>
         </template>
         <div class="w-full flex text-white">
+            <template v-if="chat">
+                <div class="w-full flex h-screen bg-slate-900">
 
+                    <div class="w-full overflow-auto">
+                        <template v-for="(content, index) in chat?.context " :key="index">
+                            <ChatContent :content="content" />
+                        </template>
+                    </div>
+                </div>
+
+            </template>
 
         </div>
         <template #form>
